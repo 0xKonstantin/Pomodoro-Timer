@@ -3,16 +3,25 @@ const startBtn = document.querySelector(".btn-start");
 const stopBtn = document.querySelector(".btn-stop");
 const resetBtn = document.querySelector(".btn-reset");
 const minutes = document.querySelector(".minutes");
-const seconds = document.querySelector(".seconds")
+const seconds = document.querySelector(".seconds");
 let myInterval;
 let state = true;
 let stopped = false;
 
+// Start timer function
 const startTimer = () => {
-  const sessionAmount = Number.parseInt(minutes.textContent);
+  let sessionMinutes = Number.parseInt(minutes.textContent);
+  let sessionSeconds = Number.parseInt(seconds.textContent);
+  
   if (state) {
     state = false;
-    let totalSeconds = sessionAmount * 60;
+    let totalSeconds;
+
+    if (sessionMinutes == 25) {
+      totalSeconds = sessionMinutes * 60;
+    } else {
+      totalSeconds = sessionMinutes * 60 + sessionSeconds;
+    }
 
     const updateSeconds = () => {
       const minuteDiv = document.querySelector(".minutes");
@@ -24,6 +33,7 @@ const startTimer = () => {
       let secondsLeft = totalSeconds % 60;
 
       if (secondsLeft < 10) {
+        secondDiv.textContent = `0${secondsLeft}`;
       } else {
         secondDiv.textContent = secondsLeft;
       }
@@ -32,57 +42,37 @@ const startTimer = () => {
       if (minutesLeft === 0 && secondsLeft === 0) {
         bells.play();
         clearInterval(myInterval);
+        state = true; // Reset the state for the next timer session
       }
     };
-    myInterval = setInterval(updateSeconds, 1000);
+  myInterval = setInterval(updateSeconds, 1000);
   } else {
     alert("Session has already started.");
   }
 };
 
+// Stop timer function
 const stopTimer = () => {
-const sessionMinutes = Number.parseInt(minutes.textContent);
-const sessionSeconds = Number.parseInt(seconds.textContent);
+  let sessionMinutes = Number.parseInt(minutes.textContent);
+  let sessionSeconds = Number.parseInt(seconds.textContent);
   if (state == false) {
     clearInterval(myInterval);
     state = true;
-  } else {
-    state = false
-    let totalMinutes = sessionMinutes;
-    let totalSeconds = sessionSeconds;
-    const updateSeconds = () => {
-      const minuteDiv = document.querySelector(".minutes");
-      const secondDiv = document.querySelector(".seconds");
-
-      totalSeconds--;
-
-      let minutesLeft = totalMinutes;
-      let secondsLeft = totalSeconds % 60;
-
-      if (secondsLeft < 10) {
-      } else {
-        secondDiv.textContent = secondsLeft;
-      }
-      minuteDiv.textContent = `${minutesLeft}`;
-
-      if (minutesLeft === 0 && secondsLeft === 0) {
-        bells.play();
-        clearInterval(myInterval);
-      }
-    };
-    myInterval = setInterval(updateSeconds, 1000);
-  }
+  } 
 };
 
+// Reset timer function
 const resetTimer = () => {
   clearInterval(myInterval);
- 
-    const minuteDiv = document.querySelector(".minutes");
-    const secondDiv = document.querySelector(".seconds");
 
-    minuteDiv.innerHTML = '25';
-    secondDiv.innerHTML = '00'
-    
+  const minuteDiv = document.querySelector(".minutes");
+  const secondDiv = document.querySelector(".seconds");
+
+  minuteDiv.innerHTML = "25";
+  secondDiv.innerHTML = "00";
+
+  state = true;
+  
 };
 
 startBtn.addEventListener("click", startTimer);
